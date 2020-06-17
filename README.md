@@ -4,7 +4,7 @@ Repository for my blog article: [How to build a free static resume site with AWS
 
 Project URL (): [nsvijayakumar.com](http://nsvijayakumar.com)
 
-<img src="https://s3-eu-west-1.amazonaws.com/nsvijayakumar.com/mypic.jpg">
+<img src="images/mypic.jpg">
 
 ### Completion:
 

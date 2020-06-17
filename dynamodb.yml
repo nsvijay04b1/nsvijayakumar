@@ -7,6 +7,9 @@ Resources:
         - 
           AttributeName: "Site"
           AttributeType: "N"
+        - 
+          AttributeName: "Visits"
+          AttributeType: "N"
       KeySchema: 
         - 
           AttributeName: "Site"
@@ -14,4 +17,4 @@ Resources:
       ProvisionedThroughput: 
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
-      TableName: "turingresumecounter"
+      TableName: "nsvijayakumar"
