@@ -1,8 +1,10 @@
-# AlanTuringResume
+# AlanTuringResume - this is the source repo i am using
 
 Repository for my blog article: [How to build a free static resume site with AWS S3, Cloudfront, and Route 53](https://seanjziegler.com/how-to-build-a-free-static-resume-site-with-aws-s3-cloudfront-and-route-53/)
 
-Project URL (): [nsvijayakumar.com](http://nsvijayakumar.com)
+# my custimization  on top.
+
+Project URL: [nsvijayakumar.com](http://nsvijayakumar.com)
 
 <img src="images/mypic.jpg">
 
@@ -18,7 +20,13 @@ Project URL (): [nsvijayakumar.com](http://nsvijayakumar.com)
 * Static S3 Hosted Website
 * Cloudfront Distribution and ACM Cert for SSL
 * DynamoDB and Lambda based serverless visitor counter
-* Cloudformation and AWS SAM templates
+* Cloudformation and AWS SAM templates  
+
+### My customizations
+
+<s3staticwebsite> ->          home page with my resume
+<s3staticwebsite>/CV ->       open pdf version of my resume for download
+<s3staticwebsite>/badges ->   redirect to all badges/certifications i earned.	
 
 ### License
 
