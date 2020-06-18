@@ -1,6 +1,81 @@
 AWSTemplateFormatVersion: '2010-09-09'
-
 Description: AWS API Gateway with a Lambda Integration
+Parameters:
+  APIName:
+    Description: Name of the API to create 
+    Type: String
+    Default: "mycv"
+    AllowedPattern: "[A-Za-z0-9-_]*"
+    MinLength: '4'
+    MaxLength: '2048'  
+    ConstraintDescription: must contain only alphanumeric characters (at least four)
+  LambdaFunctionName:
+    Description: Name of the API to create
+    Type: String
+    Default: "lambda-function"
+    AllowedPattern: "[A-Za-z0-9-_]*"
+    MinLength: '4'
+    MaxLength: '2048'  
+  APIDescription:
+    Description: Description of the API to create
+    Type: String
+    Default: No description provided. Provide 'APIDescription' param to override this.
+  APIPath:
+    Description: URL path for the API
+    Type: String
+    Default: count
+    AllowedPattern: "[A-Za-z0-9]*"
+    MinLength: '1'
+    MaxLength: '64'
+    ConstraintDescription: must contain only alphanumeric characters (1-64 chars)
+  APIStageName:
+    Description: Stage name to deploy the API to
+    Type: String
+    Default: Prod
+    AllowedPattern: "[A-Za-z0-9]*"
+    MinLength: '1'
+    MaxLength: '64'
+    ConstraintDescription: must contain only alphanumeric characters (1-64 chars)
+  LambdaCodeBucket:
+    Description: Name of the S3 bucket that's storing the Lamba function's zip file
+    Type: String
+  LambdaCodePath:
+    Description: Path to the zip file of code for the Lambda function
+    Type: String
+  APIGatewayCustomResourceARN:
+    Description: 'The ARN pointing to the Lambda function that creates custom API
+      gateway resources (install from https://apigatewaycloudformation.bynordenfelt.com/).
+      Example: arn:aws:lambda:us-east-1:123456789012:function:APIGatewayCustomResource-LambdaFunction-ABCDEFG123'
+    Type: String
+  DynamoReadCapacityUnits:
+    Description: Provisioned read throughput
+    Type: Number
+    Default: '1'
+    MinValue: '1'
+    MaxValue: '10000'
+    ConstraintDescription: must be between 1 and 10000
+  DynamoWriteCapacityUnits:
+    Description: Provisioned write throughput
+    Type: Number
+    Default: '1'
+    MinValue: '1'
+    MaxValue: '10000'
+    ConstraintDescription: must be between 1 and 10000
+  DynamodbTableName:
+    Description: Dynamo DB table name
+    Type: String
+    Default: "nsvijayakumar"
+    AllowedPattern: "[A-Za-z0-9-_]*"
+    MinLength: '4'
+    MaxLength: '2048'
+  S3staticWebsite:
+    Description: Name of the S3staticWebsite  to create 
+    Type: String
+    Default: "nsvijayakumar.com"
+    AllowedPattern: "[A-Za-z0-9.-]*"
+    MinLength: '4'
+    MaxLength: '2048'  
+    ConstraintDescription: must contain only alphanumeric characters (at least four)  
 
 Resources:
   VijayResumeCounterDynamodb: 
@@ -23,45 +98,54 @@ Resources:
       ProvisionedThroughput: 
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
-      TableName: "nsvijayakumar"
+      TableName: !Ref DynamodbTableName
 
 
   ApiGatewayRestApi:
+    DependsOn: LambdaFunction
     Type: AWS::ApiGateway::RestApi
     Properties:
-      ApiKeySourceType: HEADER
+      #ApiKeySourceType: HEADER
       Description: An API Gateway with a Lambda Integration
-      EndpointConfiguration:
-        Types:
-          - EDGE
-      Name: lambda-api
+      #EndpointConfiguration:
+        #Types:
+          #- REGIONAL
+      Name: !Ref APIName
 
   ApiGatewayResource:
+    DependsOn: LambdaFunction
     Type: AWS::ApiGateway::Resource
     Properties:
       ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-      PathPart: 'count'
+      PathPart: !Ref APIPath
       RestApiId: !Ref ApiGatewayRestApi
 
   ApiGatewayMethod:
+    DependsOn: LambdaFunction
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      #ApiKeyRequired: false
       AuthorizationType: NONE
       HttpMethod: GET
       Integration:
-        ConnectionType: INTERNET
-        Credentials: !GetAtt ApiGatewayIamRole.Arn
-        IntegrationHttpMethod: GET
-        PassthroughBehavior: WHEN_NO_MATCH
-        TimeoutInMillis: 29000
-        Type: AWS_PROXY
+        #ConnectionType: INTERNET
+        #Credentials: !GetAtt ApiGatewayIamRole.Arn
+        IntegrationHttpMethod: POST
+        #PassthroughBehavior: WHEN_NO_MATCH
+        IntegrationResponses: 
+          - StatusCode: 200
+        #TimeoutInMillis: 29000
+        Type: AWS
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations'
       OperationName: 'lambda'
       ResourceId: !Ref ApiGatewayResource
       RestApiId: !Ref ApiGatewayRestApi
+      MethodResponses:
+        - StatusCode: 200
+          
 
   ApiGatewayModel:
+    DependsOn: LambdaFunction
     Type: AWS::ApiGateway::Model
     Properties:
       ContentType: 'application/json'
@@ -69,14 +153,16 @@ Resources:
       Schema: {}
 
   ApiGatewayStage:
+    DependsOn: LambdaFunction
     Type: AWS::ApiGateway::Stage
     Properties:
       DeploymentId: !Ref ApiGatewayDeployment
-      Description: Lambda API Stage v0
+      Description: Lambda API Stage Prod
       RestApiId: !Ref ApiGatewayRestApi
-      StageName: 'Prod'
+      StageName: !Ref APIStageName
 
   ApiGatewayDeployment:
+    DependsOn: LambdaFunction
     Type: AWS::ApiGateway::Deployment
     DependsOn: ApiGatewayMethod
     Properties:
@@ -84,6 +170,7 @@ Resources:
       RestApiId: !Ref ApiGatewayRestApi
 
   ApiGatewayIamRole:
+    DependsOn: LambdaFunction
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -129,12 +216,12 @@ Resources:
           Effect: Allow
           Action:
           - "dynamodb:*"
-          Resource: "arn:aws:dynamodb:*:*:table/nsvijayakumar"
+          Resource: !Sub  "arn:aws:dynamodb:*:*:table/${DynamodbTableName}"
         - Sid: ConsoleAccess
           Effect: Allow
           Action:
           - "s3:*"
-          Resource: "arn:aws:s3:::nsvijayakumar.com/*" 
+          Resource: !Sub "arn:aws:s3:::${S3staticWebsite}/*" 
       Roles: 
         - 
           Ref: "LambdaIamRole"
@@ -143,27 +230,45 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        ZipFile: |
+        ZipFile: !Sub |
           import json
           import boto3
           # On invoking this function-retrive visitor count, add one, store  in database, return to client
           def handler(event, context):
+              visits=0
               dynamodb = boto3.client('dynamodb')
               # Get Visits
-              response = dynamodb.get_item(TableName='nsvijayakumar', Key={'Site': {'N': '0'}})
+              response = dynamodb.get_item(TableName="${DynamodbTableName}", Key={'Site': {'N': '0'}})
               if "Item" not in  response:
-                dynamodb.put_item(TableName='nsvijayakumar', Item={'Site': {'N': '0'},'Visits': {'N': '1'}})
+                dynamodb.put_item(TableName="${DynamodbTableName}", Item={'Site': {'N': '0'},'Visits': {'N': '1'}})
               else:
                 visits = int(response["Item"]["Visits"]["N"]) + 1
                 # Store Visits
-                dynamodb.put_item(TableName='nsvijayakumar', Item={'Site': {'N': '0'},'Visits': {'N': str(visits)}})
+                dynamodb.put_item(TableName="${DynamodbTableName}", Item={'Site': {'N': '0'},'Visits': {'N': str(visits)}})
               return visits
 
       Description: AWS Lambda function
-      FunctionName: 'lambda-function'
+      FunctionName: !Ref LambdaFunctionName
       Handler: index.handler
       MemorySize: 128
       Role: !GetAtt LambdaIamRole.Arn
       Runtime: python3.7
       Timeout: 60
 
+  LambdainvokePermissionForAPI:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn: ApiGatewayRestApi
+    Properties:
+      Action: 'lambda:invokeFunction'
+      FunctionName: !Ref LambdaFunctionName
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        'Fn::Join':
+          - ''
+          - - 'arn:aws:execute-api:'
+            - Ref: 'AWS::Region'
+            - ':'
+            - Ref: 'AWS::AccountId'
+            - ':'
+            - Ref: ApiGatewayRestApi
+            - /*

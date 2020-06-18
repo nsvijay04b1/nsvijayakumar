@@ -9,7 +9,7 @@ xhttp.onreadystatechange = function () {
 };
 xhttp.open(
   "GET",
-  "https://go0jx06xu9.execute-api.eu-west-1.amazonaws.com/Prod/count",
+  "https://cl9x7rqpag.execute-api.eu-west-1.amazonaws.com/Prod/count",
   true
 );
 xhttp.send();
