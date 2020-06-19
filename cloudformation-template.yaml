@@ -129,7 +129,7 @@ Resources:
       HttpMethod: GET
       Integration:
         #ConnectionType: INTERNET
-        #Credentials: !GetAtt ApiGatewayIamRole.Arn
+        Credentials: !GetAtt ApiGatewayIamRole.Arn
         IntegrationHttpMethod: POST
         #PassthroughBehavior: WHEN_NO_MATCH
         IntegrationResponses: 
