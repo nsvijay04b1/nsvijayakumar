@@ -4,7 +4,7 @@ Parameters:
   APIName:
     Description: Name of the API to create 
     Type: String
-    Default: "mycv"
+    Default: "mycv-api"
     AllowedPattern: "[A-Za-z0-9-_]*"
     MinLength: '4'
     MaxLength: '2048'  
@@ -12,7 +12,7 @@ Parameters:
   LambdaFunctionName:
     Description: Name of the API to create
     Type: String
-    Default: "lambda-function"
+    Default: "mycv-lambda"
     AllowedPattern: "[A-Za-z0-9-_]*"
     MinLength: '4'
     MaxLength: '2048'  
@@ -64,7 +64,7 @@ Parameters:
   DynamodbTableName:
     Description: Dynamo DB table name
     Type: String
-    Default: "nsvijayakumar"
+    Default: "mycv-dynamodb"
     AllowedPattern: "[A-Za-z0-9-_]*"
     MinLength: '4'
     MaxLength: '2048'
@@ -131,9 +131,15 @@ Resources:
         #ConnectionType: INTERNET
         Credentials: !GetAtt ApiGatewayIamRole.Arn
         IntegrationHttpMethod: POST
-        #PassthroughBehavior: WHEN_NO_MATCH
+        PassthroughBehavior: WHEN_NO_MATCH
         IntegrationResponses: 
           - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ''  
         #TimeoutInMillis: 29000
         Type: AWS
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations'
@@ -142,6 +148,12 @@ Resources:
       RestApiId: !Ref ApiGatewayRestApi
       MethodResponses:
         - StatusCode: 200
+          ResponseModels:
+            application/json: 'Empty'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: false
+            method.response.header.Access-Control-Allow-Methods: false
+            method.response.header.Access-Control-Allow-Origin: false
           
 
   ApiGatewayModel:

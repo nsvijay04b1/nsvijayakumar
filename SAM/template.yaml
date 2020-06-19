@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'my-cv
+
+  Sample SAM Template for my-CV
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+  DynamodbTableName: my-dynamodb
+Resources:
+  mycvlambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda.zip
+      Handler: index.handler
+      Runtime: python3.8
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /count
+            Method: get
+
+  ResumeCounterDynamodb: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - 
+          AttributeName: "Site"
+          AttributeType: "N"
+      KeySchema: 
+        - 
+          AttributeName: "Site"
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+      TableName: !Ref DynamodbTableName 
+               
+Outputs:
+  mycvapi:
+    Description: API Gateway endpoint URL for Prod stage for myCV lambda
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/count/
+  mycvlambda:
+    Description: my CV Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - mycvlambda
+      - Arn
+  mycvlambdaIamRole:
+    Description: Implicit IAM Role created for myCV lambda
+    Value:
+      Fn::GetAtt:
+      - mycvlambdaRole
+      - Arn
