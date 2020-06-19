@@ -9,9 +9,10 @@ xhttp.onreadystatechange = function () {
    }
 };
 
+
 xhttp.open("GET","https://47cfysczq6.execute-api.eu-west-1.amazonaws.com/Prod/count",true);
-xhttp.setRequestHeader('X-PINGOTHER', 'pingpong');
-xhttp.setRequestHeader('Access-Control-Allow-Origin', 'http://nsvijayakumar.com');
+//xhttp.setRequestHeader('X-PINGOTHER', 'pingpong');
+xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
 xhttp.setRequestHeader('Content-Type', 'application/xml');
 //xhttp.open('GET', 'https://cl9x7rqpag.execute-api.eu-west-1.amazonaws.com/Prod/count',true);
 xhttp.send();
