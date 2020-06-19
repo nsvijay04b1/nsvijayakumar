@@ -4,9 +4,6 @@ Repository for my blog article: [How to build a free static resume site with AWS
 
 # my custimization  on top.
 
-Project URL: [nsvijayakumar.com](http://nsvijayakumar.com)
-
-<img src="images/mypic.jpg">
 
 ### Completion:
 

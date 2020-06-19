@@ -71,7 +71,7 @@ Parameters:
   S3staticWebsite:
     Description: Name of the S3staticWebsite  to create 
     Type: String
-    Default: "nsvijayakumar.com"
+    Default: "www.sample.com"
     AllowedPattern: "[A-Za-z0-9.-]*"
     MinLength: '4'
     MaxLength: '2048'  
