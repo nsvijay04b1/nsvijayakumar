@@ -10,9 +10,10 @@ xhttp.onreadystatechange = function () {
 };
 
 
-xhttp.open("GET","https://4npunqzbu8.execute-api.eu-west-1.amazonaws.com/Prod/count",true);
+xhttp.open("GET","https://3jwt3ekxs0.execute-api.eu-west-1.amazonaws.com/Prod/count",true);
 //xhttp.setRequestHeader('X-PINGOTHER', 'pingpong');
 xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+//xhttp.setRequestHeader('Content-Type', 'application/json');
 xhttp.setRequestHeader('Content-Type', 'application/xml');
 //xhttp.open('GET', 'https://cl9x7rqpag.execute-api.eu-west-1.amazonaws.com/Prod/count',true);
 xhttp.send();
