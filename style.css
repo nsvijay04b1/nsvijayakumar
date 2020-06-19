@@ -7,7 +7,7 @@ padding:0;
 vertical-align:baseline;
 }
 
-pp#pdf { display: block; float: left; background: #666; color: white; padding: 6px 45px 6px 12px; margin-bottom: 6px; text-decoration: none;  }
+pp#pdf { display: block; float: left; background: #666; color: white; padding: 6px 24px 6px 12px; margin-bottom: 6px; text-decoration: none;  }
 pp#pdf:hover { background: #222; }
 
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
