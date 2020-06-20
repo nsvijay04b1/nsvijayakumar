@@ -17,9 +17,20 @@
 ![AWS Devops](images/devops-cicd-approach.png)
 
 
+# using SAM CLI
+
+* Either use AWS Cloud9 or install SAM CLI on your machine , follow [this](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html)
+* Using SAM to deploy your serverless app is very easy, follow [this](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html)
+   > step1:  `sam init`   that initializes your project directory
+   > step2:  `sam build`  that builds the dependencies needed , wraps your lamda code to zipped.
+   > step3:  `sam deploy --guided` that deploys your application to the AWS cloud (it involves transforming SAM templates to cloudformation and create cloudformaton stack.)
+* but, what we need to do here is instead of the sample hellow world code, we copy ours from `SAM` folder in this proj.
+
+Thats it ..Happy Serverless development !!!
+
 # Requirements
 
-* Github account( to share publicly for non-AWS users) or AWS codeCommit
+* Github account( to share publicly for non-AWS users) or AWS codeCommit ( keep in mind, you have to auth codePipeline to access your guthub)
 * AWS free tier account  ( https://aws.amazon.com/free/ )
 * IDE with git for development ( or Cloud9 on AWS )
 * Register a domain and configure hostedzone in Route53 ( hostedzone is created automatically if registered also using Route53 )
@@ -39,11 +50,35 @@
    3. launch cloudformation template to build DynamoDB, lambda & Apigateway using cloudformation (used this) 
           (or)
       launch codeBuild with buildspec using SAM CLI to deploy SAM templates to achieve the same.( you can take this approach too)
+ * A nice 404 error page when there is an issue.
+      
 
 # Features in pipeline
 
 * Cloudfront Distribution 
 * ACM Cert for SSL
+* Automation of creating S3 bucket and configuring staticwebsite and its DNS RSs.
+* Automation of creation of codePipeline and IAM role it needed.
+* creation of custom api domain and its mappings and use this custom domain in JS to fetch the visitors count, right now it is hardcoded with current APIgateway url.
+
+# Issues faced.
+* main issue i faced is with CORS as S3 website is of different domain of api , we have to enable CORS.
+* Go to S3 bucket -> Permissions -> CORS configuration  and add this
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+```
+* on APIgateway side and JS side CORS chages are already in the code. But, in case you face an issue , do this on APigateway side.
+
+Goto APIGateway -> Select your API -> Resources -> select the apiPath( count in my case) -> Click Actions button above it  ->  Enable CORS  ->  Deploy API again.
 
 
 # Some features of my resume sharing website.
