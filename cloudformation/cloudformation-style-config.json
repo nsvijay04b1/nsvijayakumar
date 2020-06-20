@@ -1,0 +1,34 @@
+[
+   {
+     "ParameterKey": "APIName",
+     "ParameterValue": "mycv-api"
+   }, 
+   {
+     "ParameterKey": "LambdaFunctionName",
+     "ParameterValue": "mycv-lambda"
+   },
+   {
+     "ParameterKey": "APIPath",
+     "ParameterValue": "count"
+   },
+   {
+     "ParameterKey": "APIStageName",
+     "ParameterValue": "Prod"
+   }, 
+   {
+     "ParameterKey": "DynamodbTableName",
+     "ParameterValue": "mycv-dynamodb"
+   },
+   {
+     "ParameterKey": "S3staticWebsite",
+     "ParameterValue": "nsvijayakumar.com"
+   },
+   {
+     "ParameterKey": "DynamoReadCapacityUnits",
+     "ParameterValue": "1"
+   },
+   {
+     "ParameterKey": "DynamoWriteCapacityUnits",
+     "ParameterValue": "1"
+   }
+]
