@@ -17,16 +17,16 @@
 ![AWS Devops](images/devops-cicd-approach.png)
 
 
-# using SAM CLI
+# using AWS SAM(  Serverless Application Model )
 
 * Either use AWS Cloud9 or install SAM CLI on your machine , follow [this](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html)
 * Using SAM to deploy your serverless app is very easy, follow [this](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html)
-   > step1:  `sam init`   that initializes your project directory
-   > step2:  `sam build`  that builds the dependencies needed , wraps your lamda code to zipped.
-   > step3:  `sam deploy --guided` that deploys your application to the AWS cloud (it involves transforming SAM templates to cloudformation and create cloudformaton stack.)
+   1.  `sam init`   that initializes your project directory
+   2.  `sam build`  that builds the dependencies needed , wraps your lamda code to zipped.
+   3.  `sam deploy --guided` that deploys your application to the AWS cloud (it involves transforming SAM templates to cloudformation and create cloudformaton stack.)
 * but, what we need to do here is instead of the sample hellow world code, we copy ours from `SAM` folder in this proj.
 
-Thats it ..Happy Serverless development !!!
+`Thats it ..Happy Serverless development !!!`
 
 # Requirements
 
@@ -63,7 +63,7 @@ Thats it ..Happy Serverless development !!!
 
 # Issues faced.
 * main issue i faced is with CORS as S3 website is of different domain of api , we have to enable CORS.
-* Go to S3 bucket -> Permissions -> CORS configuration  and add this
+* `Go to S3 bucket -> Permissions -> CORS configuration`  and add this
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
@@ -78,7 +78,40 @@ Thats it ..Happy Serverless development !!!
 ```
 * on APIgateway side and JS side CORS chages are already in the code. But, in case you face an issue , do this on APigateway side.
 
-Goto APIGateway -> Select your API -> Resources -> select the apiPath( count in my case) -> Click Actions button above it  ->  Enable CORS  ->  Deploy API again.
+`Goto APIGateway -> Select your API -> Resources -> select the apiPath( count in my case) -> Click Actions button above it  ->  Enable CORS  ->  Deploy API again.`
+
+* worth noting, but , already handled, cloudformation parameters configuration json which used by cloudformation doesnot work while using codePipeline, correct is added in code. This is how diff looks like
+
+
+**cloudformation/cloudformation-style-config.json**
+```
+[
+   {
+     "ParameterKey": "APIName",
+     "ParameterValue": "mycv-api"
+   },
+   {
+     "ParameterKey": "LambdaFunctionName",
+     "ParameterValue": "mycv-lambda"
+   },
+   {
+     "ParameterKey": "APIPath",
+     "ParameterValue": "count"
+   } ...... etc 
+]
+```
+
+**cloudformation/codepipeline-style-config.json**
+
+```
+{
+  "Parameters": {
+    "APIName": "mycv-api",
+    "LambdaFunctionName": "mycv-lambda",
+    "APIPath": "count"  .......etc 
+}
+
+```
 
 
 # Some features of my resume sharing website.
