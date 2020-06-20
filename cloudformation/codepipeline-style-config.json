@@ -7,8 +7,10 @@
      "DynamodbTableName": "mycv-dynamodb",
      "S3staticWebsite": "nsvijayakumar.com",
      "DynamoReadCapacityUnits": "1",
-     "DynamoWriteCapacityUnits": "1"
-
+     "DynamoWriteCapacityUnits": "1",
+     "APIGatewayCustomResourceARN": "",
+     "LambdaCodePath": "",
+     "LambdaCodeBucket": ""
   }
 }
 
