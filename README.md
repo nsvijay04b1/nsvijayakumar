@@ -34,8 +34,25 @@ Thats it ..Happy Serverless development !!!
 * AWS free tier account  ( https://aws.amazon.com/free/ )
 * IDE with git for development ( or Cloud9 on AWS )
 * Register a domain and configure hostedzone in Route53 ( hostedzone is created automatically if registered also using Route53 )
-* create two buckets for example 'www.sample.com' , 'sample.com' ( with full DNS name of your website) and allow public access.
-* create ALIAS recordset in Route53 to point to your S3 bucket.
+* create two buckets for example `www.sample.com` , `sample.com` ( with full DNS name of your website) and allow public access.
+* From S3 bucket `www.sample.com` , Goto `properties` -> `static web hosting` -> `Redirect requests
+`  -> ` Udate "Target bucket or domain"  with "sample.com" and Protocol with "http"`
+* create ALIAS recordset (`www.sample.dom`) in Route53 to point to your S3 bucket(`sample.com`).
+* Make sure you enable public access to S3 bucket using bucket policy
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::`www.example.com`/*"
+        }
+    ]
+}
+```
 
 
 # Completed Features
